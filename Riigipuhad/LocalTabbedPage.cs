@@ -7,6 +7,10 @@ namespace Riigipuhad
     public class LocalTabbedPage
     {
         public string Title { get; set; }
-        public LocalContentPage[] Pages { get; set; }
+        public List<LocalContentPage> Pages { get; set; }
+        public LocalTabbedPage() 
+        {
+            Pages = new List<LocalContentPage>();
+        }
     }
 }
