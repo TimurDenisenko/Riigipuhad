@@ -94,6 +94,7 @@ namespace Riigipuhad
                     }
                 }
             });
+            //FileManage.ClearFiles();
             UpdateTabbedPage();
         }
         private void UpdateTabbedPage()
@@ -141,13 +142,13 @@ namespace Riigipuhad
             {
                 Text = "Lisada uus vahekaardi leht",
             };
-            Label lbl = new Label { Text = description };
+            Label lbl = new Label { Text = description, FontFamily="HappyFestive.ttf#HF" };
             btn1.Clicked+=Btn_Clicked;
             btn2.Clicked+=BtnTapped_Clicked;
             return new ContentPage
             {
                 Title = title,
-                Content = new StackLayout { Children = { image,new StackLayout { Children = {lbl,btn1,btn2}, VerticalOptions = LayoutOptions.End } }, VerticalOptions = LayoutOptions.Center },
+                Content = new StackLayout { Children = { image,lbl,new StackLayout { Children = {btn1,btn2}, VerticalOptions = LayoutOptions.End, Orientation = StackOrientation.Horizontal } }, VerticalOptions = LayoutOptions.Center },
             };
         }
 

@@ -23,6 +23,13 @@ namespace Riigipuhad
             }
             return Files.Select(x => x.Name).ToArray();
         }
+        public static void ClearFiles(string filePath = null)
+        {
+            foreach (string item in GetFilesFromFolder(filePath))
+            {
+                File.Delete(GetSolutionDirectory()+"/"+item);
+            }
+        }
         public static void SerializeToFile<T>(T obj, string filePath)
         {
             string json = JsonConvert.SerializeObject(obj);
