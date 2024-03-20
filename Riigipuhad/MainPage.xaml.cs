@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Essentials;
+using System.Resources;
 
 namespace Riigipuhad
 {
@@ -149,6 +150,7 @@ namespace Riigipuhad
                 ltp.Pages.Add(lcp);
             } while (await DisplayAlert("Leht", "Kas soovite lisada lehe?", "Jah", "Ei"));
             CreateTabbedPage(new List<LocalTabbedPage> { ltp });
+            var a = FileManage.GetSolutionDirectory();
         }
 
         private async void Btn_Clicked(object sender, EventArgs e)
