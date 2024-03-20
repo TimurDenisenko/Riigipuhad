@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
+using Plugin.Media.Abstractions;
+using System;
 using System.IO;
 using System.Linq;
+using Xamarin.Forms;
 
 namespace Riigipuhad
 {
@@ -8,38 +11,35 @@ namespace Riigipuhad
     {
         public static string GetSolutionDirectory()
         {
-            var a = Directory.GetCurrentDirectory();
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            return a;
+            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        }
+        public static string[] GetFilesFromFolder(string filePath = null)
+        {
+            DirectoryInfo d = new DirectoryInfo(filePath ?? GetSolutionDirectory());
+            FileInfo[] Files = d.GetFiles();
+            foreach (var item in Files)
+            {
+                var a = item.Name;
+            }
+            return Files.Select(x => x.Name).ToArray();
         }
         public static void SerializeToFile<T>(T obj, string filePath)
         {
             string json = JsonConvert.SerializeObject(obj);
             File.WriteAllText(filePath, json);
         }
-
         public static T DeserializeFromFile<T>(string filePath)
         {
             string json = File.ReadAllText(filePath);
             return JsonConvert.DeserializeObject<T>(json);
+        }
+        public static ImageSource ConvertToImageSource(byte[] img)
+        {
+            return ImageSource.FromStream(() => new MemoryStream(img));
+        }
+        public static ImageSource ConvertToImageSource(MediaFile img)
+        {
+            return ImageSource.FromStream(() => img.GetStream());
         }
     }
 }

@@ -94,8 +94,18 @@ namespace Riigipuhad
                     }
                 }
             });
+            UpdateTabbedPage();
         }
-
+        private void UpdateTabbedPage()
+        {
+            string[] files = FileManage.GetFilesFromFolder();
+            List<LocalTabbedPage> pages = new List<LocalTabbedPage>();
+            foreach (string file in files) 
+            {
+                pages.Add(FileManage.DeserializeFromFile<LocalTabbedPage>(FileManage.GetSolutionDirectory()+$"/{file}"));
+            }
+            CreateTabbedPage(pages);
+        }
         private void CreateTabbedPage(List<LocalTabbedPage> listpage)
         {
             foreach (LocalTabbedPage page in listpage)
@@ -115,9 +125,9 @@ namespace Riigipuhad
         {
             ImageSource img;
             if (image1!=null)
-                img = ConvertToImageSource(image1);
+                img = FileManage.ConvertToImageSource(image1);
             else
-                img = ConvertToImageSource(image2);
+                img = FileManage.ConvertToImageSource(image2);
             ImageButton image = new ImageButton { Source = img };
             image.Clicked += async (sender, e) =>
             {
@@ -131,12 +141,13 @@ namespace Riigipuhad
             {
                 Text = "Lisada uus vahekaardi leht",
             };
+            Label lbl = new Label { Text = description };
             btn1.Clicked+=Btn_Clicked;
             btn2.Clicked+=BtnTapped_Clicked;
             return new ContentPage
             {
                 Title = title,
-                Content = new StackLayout { Children = { image,new StackLayout { Children = { btn1,btn2}, VerticalOptions = LayoutOptions.End } }, VerticalOptions = LayoutOptions.Center },
+                Content = new StackLayout { Children = { image,new StackLayout { Children = {lbl,btn1,btn2}, VerticalOptions = LayoutOptions.End } }, VerticalOptions = LayoutOptions.Center },
             };
         }
 
@@ -150,7 +161,7 @@ namespace Riigipuhad
                 ltp.Pages.Add(lcp);
             } while (await DisplayAlert("Leht", "Kas soovite lisada lehe?", "Jah", "Ei"));
             CreateTabbedPage(new List<LocalTabbedPage> { ltp });
-            var a = FileManage.GetSolutionDirectory();
+            FileManage.SerializeToFile(ltp, FileManage.GetSolutionDirectory()+$"/{new_title}.json");
         }
 
         private async void Btn_Clicked(object sender, EventArgs e)
@@ -166,15 +177,6 @@ namespace Riigipuhad
             await CrossMedia.Current.Initialize();
             MediaFile new_image = await CrossMedia.Current.PickPhotoAsync();
             return new Tuple<string, string, string, MediaFile>(new_title, new_desc, new_content, new_image);
-        }
-
-        private ImageSource ConvertToImageSource(byte[] img)
-        {
-            return ImageSource.FromStream(() => new MemoryStream(img));
-        }
-        private ImageSource ConvertToImageSource(MediaFile img)
-        {
-            return ImageSource.FromStream(() => img.GetStream());
         }
     }
 }
