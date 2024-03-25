@@ -19,9 +19,9 @@ namespace Riigipuhad
         {
             DirectoryInfo d = new DirectoryInfo(filePath ?? GetSolutionDirectory());
             FileInfo[] Files = d.GetFiles();
-            foreach (var item in Files)
+            foreach (FileInfo item in Files)
             {
-                var a = item.Name;
+                string a = item.Name;
             }
             return Files.Select(x => x.Name).ToArray();
         }
@@ -42,14 +42,10 @@ namespace Riigipuhad
             string json = File.ReadAllText(filePath);
             return JsonConvert.DeserializeObject<T>(json);
         }
-        public static ImageSource ConvertToImageSource(byte[] img)
-        {
-            return ImageSource.FromStream(() => new MemoryStream(img));
-        }
-        public static ImageSource ConvertToImageSource(MediaFile img)
-        {
-            return ImageSource.FromStream(() => img.GetStream());
-        }
+        public static ImageSource ConvertToImageSource(byte[] img) => 
+            ImageSource.FromStream(() => new MemoryStream(img));
+        public static ImageSource ConvertToImageSource(MediaFile img) => 
+            ImageSource.FromStream(() => img.GetStream());
         public async static Task<byte[]> ConvertToByteArray(ImageSource imageSource)
         {
             Stream stream = await ((StreamImageSource)imageSource).Stream(CancellationToken.None);

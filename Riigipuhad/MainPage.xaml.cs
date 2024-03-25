@@ -15,6 +15,7 @@ namespace Riigipuhad
 {
     public partial class MainPage : TabbedPage
     {
+        string currentPage;
         public MainPage()
         {
             //CreateTabbedPage(new List<Tuple<string, List<Tuple<string, string, byte[]>>>> {
@@ -94,9 +95,11 @@ namespace Riigipuhad
                     }
                 }
             });
+            
             //FileManage.ClearFiles();
             UpdateTabbedPage();
         }
+
         private void UpdateTabbedPage()
         {
             string[] files = FileManage.GetFilesFromFolder();
@@ -142,14 +145,79 @@ namespace Riigipuhad
             {
                 Text = "Lisada uus vahekaardi leht",
             };
+            Button btn3 = new Button
+            {
+                Text= "Kustuta leht",
+            };
+            Button btn4 = new Button
+            {
+                Text= "Kustuta element",
+            };
             Label lbl = new Label { Text = description };
             btn1.Clicked+=Btn_Clicked;
             btn2.Clicked+=BtnTapped_Clicked;
-            return new ContentPage
+            ContentPage contentPage = new ContentPage
             {
                 Title = title,
-                Content = new StackLayout { Children = { image,lbl,new StackLayout { Children = {btn1,btn2}, VerticalOptions = LayoutOptions.End, Orientation = StackOrientation.Horizontal } }, VerticalOptions = LayoutOptions.Center },
+                Content = new StackLayout { Children = { image, lbl,
+                        new StackLayout { Children = { btn1, btn2 }, Orientation = StackOrientation.Horizontal,HorizontalOptions = LayoutOptions.Center },
+                        new StackLayout { Children = { btn3, btn4 }, Orientation = StackOrientation.Horizontal,HorizontalOptions = LayoutOptions.Center }, 
+                    }, VerticalOptions= LayoutOptions.Center
+                }
             };
+            btn3.Clicked+=async(sender, e) =>
+            {
+                string action = await DisplayActionSheet("Lihtsalt leht või vahekaardi leht?", "Tühista", null, "Leht", "Vahekaardi leht");
+                if (action=="Leht")
+                {
+                    foreach (TabbedPage item in Children)
+                    {
+                        if (item.Children.Contains(contentPage))
+                        {
+                            item.Children.Remove(contentPage);
+                            break;
+                        }
+                    }
+                }
+                else if (action=="Vahekaardi leht")
+                {
+                    foreach (TabbedPage item in Children)
+                    {
+                        if (item.Children.Contains(contentPage))
+                        {
+                            Children.Remove(item);
+                            break;
+                        }
+                    }
+                };
+            };
+            btn4.Clicked+=async (sender, e) =>
+            {
+                string action = string.Empty;
+                if (image?.IsVisible ?? false == true & lbl?.IsVisible ?? false == true)
+                {
+                    action = await DisplayActionSheet("Vali element", "Tühista", null, "Pilt", "Kirjaldus");
+                }
+                else if (image?.IsVisible ?? false == true & lbl?.IsVisible ?? false == false)
+                {
+                    action = await DisplayActionSheet("Vali element", "Tühista", null, "Pilt");
+                }
+                else if (image?.IsVisible ?? false == false & lbl?.IsVisible ?? false == true)
+                {
+                    action = await DisplayActionSheet("Vali element", "Tühista", null, "Kirjaldus");
+                }
+                if (action=="Pilt")
+                {
+                    image.IsVisible = false;
+                    image = null;
+                }
+                if (action=="Kirjaldus")
+                {
+                    lbl.IsVisible = false;
+                    lbl = null;
+                }
+            };
+            return contentPage;
         }
 
         private async void BtnTapped_Clicked(object sender, EventArgs e)
