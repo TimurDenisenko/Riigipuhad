@@ -142,7 +142,7 @@ namespace Riigipuhad
             {
                 Text = "Lisada uus vahekaardi leht",
             };
-            Label lbl = new Label { Text = description, FontFamily="HappyFestive.ttf#HF" };
+            Label lbl = new Label { Text = description };
             btn1.Clicked+=Btn_Clicked;
             btn2.Clicked+=BtnTapped_Clicked;
             return new ContentPage
@@ -159,6 +159,7 @@ namespace Riigipuhad
             do
             {
                 LocalContentPage lcp = new LocalContentPage(await LocalPage());
+                lcp.ImageByte = await FileManage.ConvertToByteArray(FileManage.ConvertToImageSource(lcp.ImageMedia));
                 ltp.Pages.Add(lcp);
             } while (await DisplayAlert("Leht", "Kas soovite lisada lehe?", "Jah", "Ei"));
             CreateTabbedPage(new List<LocalTabbedPage> { ltp });

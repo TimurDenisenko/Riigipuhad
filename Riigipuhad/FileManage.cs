@@ -3,6 +3,8 @@ using Plugin.Media.Abstractions;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Riigipuhad
@@ -47,6 +49,13 @@ namespace Riigipuhad
         public static ImageSource ConvertToImageSource(MediaFile img)
         {
             return ImageSource.FromStream(() => img.GetStream());
+        }
+        public async static Task<byte[]> ConvertToByteArray(ImageSource imageSource)
+        {
+            Stream stream = await ((StreamImageSource)imageSource).Stream(CancellationToken.None);
+            byte[] image = new byte[stream.Length];
+            stream.Read(image, 0, image.Length);
+            return image;
         }
     }
 }
