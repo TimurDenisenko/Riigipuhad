@@ -2,20 +2,15 @@
 using Plugin.Media;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Xamarin.Essentials;
-using System.Resources;
+using System.Reflection;
+using System.IO;
 
 namespace Riigipuhad
 {
     public partial class MainPage : TabbedPage
     {
-        string currentPage;
         public MainPage()
         {
             CreateTabbedPage(new List<LocalTabbedPage>
@@ -87,7 +82,7 @@ namespace Riigipuhad
         {
             foreach (LocalTabbedPage page in listpage)
             {
-                TabbedPage tp = new TabbedPage { Title = page.Title };
+                TabbedPage tp = new TabbedPage { Title = page.Title, BarBackgroundColor = Color.Black };
                 foreach (LocalContentPage cp in page.Pages)
                 {
                     if (cp.ImageByte != null)
@@ -104,15 +99,16 @@ namespace Riigipuhad
             if (image1!=null)
                 img = FileManage.ConvertToImageSource(image1);
             else
-                img = FileManage.ConvertToImageSource(image2);
-            Label lbl = new Label { Text = description, FontFamily = "Gl" };
-            ImageButton image = new ImageButton { Source = img };
+                img = FileManage.ConvertToImageSource(image2); 
+            //myLabel.FontFamily = FontFamily.FromStream(fontStream);
+            Label lbl = new Label { Text = description, FontSize = 25, FontFamily = "Glor"};
+            ImageButton image = new ImageButton { Source = img,BackgroundColor = Color.Transparent};
             image.Clicked += async (sender, e) => await DisplayAlert($"{title} {content}",lbl.Text,"OK");
-            Button btn1 = new Button { Text = "Lisada uus leht", };
-            Button btn2 = new Button { Text = "Lisada uus vahekaardi leht", };
-            Button btn3 = new Button { Text= "Kustuta leht", };
-            Button btn4 = new Button { Text= "Kustuta element", };
-            Button btn5 = new Button { Text = "Muuta element", };
+            Button btn1 = new Button { Text = "Lisada uus leht" };
+            Button btn2 = new Button { Text = "Lisada uus vahekaardi leht" };
+            Button btn3 = new Button { Text= "Kustuta leht" };
+            Button btn4 = new Button { Text= "Kustuta element" };
+            Button btn5 = new Button { Text = "Muuta element"};
             btn1.Clicked+=Btn_Clicked;
             btn2.Clicked+=BtnTapped_Clicked;
             ContentPage contentPage = new ContentPage
@@ -138,7 +134,7 @@ namespace Riigipuhad
                 }
                 else if (image?.IsVisible ?? false == false & lbl?.IsVisible ?? false == true)
                 {
-                    action = await DisplayActionSheet("Vali element", "Tühista", null, "Kirjaldus");
+                    action = await DisplayActionSheet("Vali element", "Tühista", null, "Kirjal dus");
                 }
                 return action;
             };
@@ -179,7 +175,6 @@ namespace Riigipuhad
                 if (action=="Kirjaldus")
                 {
                     lbl.IsVisible = false;
-                    lbl = null;
                 }
             };
             btn5.Clicked += async (sender, e) =>
