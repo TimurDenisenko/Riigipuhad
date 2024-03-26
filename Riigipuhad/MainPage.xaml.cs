@@ -96,6 +96,7 @@ namespace Riigipuhad
         }
         private ContentPage CreatePage(string title, string description, string content, byte[] image1 = null, MediaFile image2 = null)
         {
+            
             ImageSource img;
             if (image1!=null)
                 img = FileManage.ConvertToImageSource(image1);
@@ -120,8 +121,38 @@ namespace Riigipuhad
                         new StackLayout { Children = { btn3, btn4 }, Orientation = StackOrientation.Horizontal,HorizontalOptions = LayoutOptions.CenterAndExpand },
                         new StackLayout { Children = { btn5 }, Orientation = StackOrientation.Horizontal,HorizontalOptions = LayoutOptions.CenterAndExpand },
                     }, VerticalOptions= LayoutOptions.Center
-                }
+                },
             };
+            async void _back()
+            {
+                byte a = 1;
+                byte b = 128;
+                bool aup = true;
+                bool bup = true;
+                if (a==255 || a==0)
+                    aup=!aup;
+                if (b==255 || b==0)
+                    bup=!bup;
+                while (true)
+                {
+                    await Task.Delay(20);
+                    contentPage.Background = new LinearGradientBrush(new GradientStopCollection { new GradientStop(Color.FromRgb(a,a,a), 0.25f), new GradientStop(Color.FromRgb(b,b,b), 1) });
+                    if (a==255 || a==0)
+                        aup=!aup;
+                    if (b==255 || b==0)
+                        bup=!bup;
+                    if (aup)
+                        a++;
+                    else
+                        a--;
+                    if (bup)
+                        b++;
+                    else
+                        b--;
+
+                }
+            }
+            _back();
             async Task<string> _element()
             {
                 string action = string.Empty;
