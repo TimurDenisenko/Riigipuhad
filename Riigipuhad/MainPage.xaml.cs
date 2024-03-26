@@ -13,6 +13,7 @@ namespace Riigipuhad
     {
         public MainPage()
         {
+            BarBackgroundColor = Color.Black;
             CreateTabbedPage(new List<LocalTabbedPage>
             {
                 new LocalTabbedPage
