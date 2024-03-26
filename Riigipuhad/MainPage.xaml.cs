@@ -18,32 +18,6 @@ namespace Riigipuhad
         string currentPage;
         public MainPage()
         {
-            //CreateTabbedPage(new List<Tuple<string, List<Tuple<string, string, byte[]>>>> {
-            //    new Tuple<string, List<Tuple<string, string, byte[]>>>(
-            //    "Talv",new List<Tuple<string, string, byte[]>>{
-            //        new Tuple<string, string, byte[]>("Detsember","24. detsember Jõululaupäev\n25. detsember Esimene jõulupüha\n26. detsember Teine jõulupüha",Properties.Resources.winter1),
-            //        new Tuple<string, string, byte[]>("Jaanuar","01. jaanuar Uusaasta",Properties.Resources.winter2),
-            //        new Tuple<string, string, byte[]>("Veebruar"," 24. veebruar Iseseisvuspäev, Eesti Vabariigi aastapäev",Properties.Resources.winter3)
-            //        }),
-            //    new Tuple<string, List<Tuple<string, string, byte[]>>>(
-            //    "Kevad",new List<Tuple<string, string, byte[]>>{
-            //        new Tuple<string, string, byte[]>("Märts","29. märts Suur reede\n31. märts Ülestõusmispühade 1. püha",Properties.Resources.spring1),
-            //        new Tuple<string, string, byte[]>("Aprill","23. aprill – veteranipäev",Properties.Resources.spring2),
-            //        new Tuple<string, string, byte[]>("Mai"," 01. mai Kevadpüha\n19. mai Nelipühade 1. püha",Properties.Resources.spring3)
-            //        }),
-            //    new Tuple<string, List<Tuple<string, string, byte[]>>>(
-            //    "Suvel",new List<Tuple<string, string, byte[]>>{
-            //        new Tuple<string, string, byte[]>("Juuni","23. juuni Võidupüha\n24. juuni Jaanipäev",Properties.Resources.summer1),
-            //        new Tuple<string, string, byte[]>("Juuli","10. juuli Capybara armastuspäev",Properties.Resources.summer2),
-            //        new Tuple<string, string, byte[]>("August","20. august Taasiseseisvumispäev",Properties.Resources.summer3)
-            //        }),
-            //    new Tuple<string, List<Tuple<string, string, byte[]>>>(
-            //    "Sügis",new List<Tuple<string, string, byte[]>>{
-            //        new Tuple<string, string, byte[]>("September","1. september teadmistepäev\n8. september (septembri teine pühapäev) vanavanemate päev",Properties.Resources.autumn1),
-            //        new Tuple<string, string, byte[]>("Oktoober","19. oktoober (oktoobri kolmas laupäev) hõimupäev",Properties.Resources.autumn2),
-            //        new Tuple<string, string, byte[]>("November","10. november (novembri teine pühapäev) isadepäev",Properties.Resources.autumn3)
-            //        })
-            //});
             CreateTabbedPage(new List<LocalTabbedPage>
             {
                 new LocalTabbedPage
@@ -95,7 +69,6 @@ namespace Riigipuhad
                     }
                 }
             });
-            
             //FileManage.ClearFiles();
             UpdateTabbedPage();
         }
@@ -132,38 +105,42 @@ namespace Riigipuhad
                 img = FileManage.ConvertToImageSource(image1);
             else
                 img = FileManage.ConvertToImageSource(image2);
+            Label lbl = new Label { Text = description, FontFamily = "Gl" };
             ImageButton image = new ImageButton { Source = img };
-            image.Clicked += async (sender, e) =>
-            {
-                await DisplayAlert($"{title} {content}",description,"OK");
-            };
-            Button btn1 = new Button
-            {
-                Text = "Lisada uus leht",
-            };
-            Button btn2 = new Button
-            {
-                Text = "Lisada uus vahekaardi leht",
-            };
-            Button btn3 = new Button
-            {
-                Text= "Kustuta leht",
-            };
-            Button btn4 = new Button
-            {
-                Text= "Kustuta element",
-            };
-            Label lbl = new Label { Text = description };
+            image.Clicked += async (sender, e) => await DisplayAlert($"{title} {content}",lbl.Text,"OK");
+            Button btn1 = new Button { Text = "Lisada uus leht", };
+            Button btn2 = new Button { Text = "Lisada uus vahekaardi leht", };
+            Button btn3 = new Button { Text= "Kustuta leht", };
+            Button btn4 = new Button { Text= "Kustuta element", };
+            Button btn5 = new Button { Text = "Muuta element", };
             btn1.Clicked+=Btn_Clicked;
             btn2.Clicked+=BtnTapped_Clicked;
             ContentPage contentPage = new ContentPage
             {
                 Title = title,
                 Content = new StackLayout { Children = { image, lbl,
-                        new StackLayout { Children = { btn1, btn2 }, Orientation = StackOrientation.Horizontal,HorizontalOptions = LayoutOptions.Center },
-                        new StackLayout { Children = { btn3, btn4 }, Orientation = StackOrientation.Horizontal,HorizontalOptions = LayoutOptions.Center }, 
+                        new StackLayout { Children = { btn1, btn2 }, Orientation = StackOrientation.Horizontal,HorizontalOptions = LayoutOptions.CenterAndExpand },
+                        new StackLayout { Children = { btn3, btn4 }, Orientation = StackOrientation.Horizontal,HorizontalOptions = LayoutOptions.CenterAndExpand },
+                        new StackLayout { Children = { btn5 }, Orientation = StackOrientation.Horizontal,HorizontalOptions = LayoutOptions.CenterAndExpand },
                     }, VerticalOptions= LayoutOptions.Center
                 }
+            };
+            async Task<string> _element()
+            {
+                string action = string.Empty;
+                if (image?.IsVisible ?? false == true & lbl?.IsVisible ?? false == true)
+                {
+                    action = await DisplayActionSheet("Vali element", "Tühista", null, "Pilt", "Kirjaldus");
+                }
+                else if (image?.IsVisible ?? false == true & lbl?.IsVisible ?? false == false)
+                {
+                    action = await DisplayActionSheet("Vali element", "Tühista", null, "Pilt");
+                }
+                else if (image?.IsVisible ?? false == false & lbl?.IsVisible ?? false == true)
+                {
+                    action = await DisplayActionSheet("Vali element", "Tühista", null, "Kirjaldus");
+                }
+                return action;
             };
             btn3.Clicked+=async(sender, e) =>
             {
@@ -193,19 +170,7 @@ namespace Riigipuhad
             };
             btn4.Clicked+=async (sender, e) =>
             {
-                string action = string.Empty;
-                if (image?.IsVisible ?? false == true & lbl?.IsVisible ?? false == true)
-                {
-                    action = await DisplayActionSheet("Vali element", "Tühista", null, "Pilt", "Kirjaldus");
-                }
-                else if (image?.IsVisible ?? false == true & lbl?.IsVisible ?? false == false)
-                {
-                    action = await DisplayActionSheet("Vali element", "Tühista", null, "Pilt");
-                }
-                else if (image?.IsVisible ?? false == false & lbl?.IsVisible ?? false == true)
-                {
-                    action = await DisplayActionSheet("Vali element", "Tühista", null, "Kirjaldus");
-                }
+                string action = await _element();
                 if (action=="Pilt")
                 {
                     image.IsVisible = false;
@@ -215,6 +180,21 @@ namespace Riigipuhad
                 {
                     lbl.IsVisible = false;
                     lbl = null;
+                }
+            };
+            btn5.Clicked += async (sender, e) =>
+            {
+                string action = await _element();
+                if (action == "Pilt")
+                {
+                    await CrossMedia.Current.Initialize();
+                    MediaFile new_image = await CrossMedia.Current.PickPhotoAsync();
+                    image.Source = FileManage.ConvertToImageSource(new_image);
+                }
+                if (action == "Kirjaldus")
+                {
+                    string new_kirjaldus = await DisplayPromptAsync("Kirjaldus", "Kirjuta uus kirjeldus");
+                    lbl.Text = new_kirjaldus;
                 }
             };
             return contentPage;

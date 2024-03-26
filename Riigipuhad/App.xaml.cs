@@ -1,7 +1,5 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-
+﻿using Xamarin.Forms;
+[assembly:ExportFont("Glorious.ttf",Alias = "Gl")]
 namespace Riigipuhad
 {
     public partial class App : Application

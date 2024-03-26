@@ -93,6 +93,16 @@ namespace Riigipuhad.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
+        internal static byte[] Glorious {
+            get {
+                object obj = ResourceManager.GetObject("Glorious", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
         internal static byte[] spring1 {
             get {
                 object obj = ResourceManager.GetObject("spring1", resourceCulture);
